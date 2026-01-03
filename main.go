@@ -3,12 +3,16 @@ package main
 import (
 	"fmt"
 
+	lom "github.com/samber/lo/mutable"
+	lop "github.com/samber/lo/parallel"
+
 	"github.com/samber/lo"
 )
 
 func main() {
-	fmt.Println("=== Lo Library Examples ===\n")
+	fmt.Println("=== Lo Library Examples ===")
 
+	// https://pkg.go.dev/github.com/samber/lo#readme-spec
 	// 1: map, filter, reduce
 
 	numbers := []int{1, 2, 3, 4, 5}
@@ -23,5 +27,47 @@ func main() {
 
 	sum := lo.Reduce(numbersFiltered, func(agg int, item int, index int) int { return agg + item }, 61)
 
-	fmt.Printf("numbers: %v, numbers squared: %v, numbers filtered: %v, reduced sum with 61: %v", numbers, numbersSquared, numbersFiltered, sum)
+	fmt.Printf("numbers: %v, numbers squared: %v, numbers filtered: %v, reduced sum with 61: %v\n", numbers, numbersSquared, numbersFiltered, sum)
+
+	// parallel map, unique map
+	// and mutable map :/
+
+	type footballer struct {
+		name string
+		age  int
+	}
+
+	ts := []footballer{{name: "oulai", age: 19}, {name: "zubi", age: 31}, {name: "batagov", age: 24}, {name: "batagov", age: 24}, {name: "batagov", age: 24}}
+	fmt.Println("initial ts: ", ts)
+
+	tsUniq := lo.UniqMap(ts, func(item footballer, index int) string {
+		return item.name
+	})
+
+	fmt.Println("ts uniq: ", tsUniq)
+
+	tsAfterAYear := lop.Map(ts, func(item footballer, index int) footballer {
+		item.age += 1
+		return item
+	})
+
+	fmt.Println("ts after a year (everyone grows paralelly :p): ", tsAfterAYear)
+
+	lom.Map(ts, func(item footballer) footballer {
+		item.age += 1
+		return item
+	})
+
+	fmt.Println("ts after mutation: ", ts)
+	// lets try reverse too
+	toRev := []int{1, 2, 3}
+
+	fmt.Println("initial list: ", toRev)
+	lom.Reverse(toRev)
+
+	fmt.Println("reversed list: ", toRev)
+	lom.Shuffle(toRev)
+
+	fmt.Println("shuffled list: ", toRev)
+	// tomorrow: other functions of lop, partition by group by etc.
 }
