@@ -70,4 +70,28 @@ func main() {
 
 	fmt.Println("shuffled list: ", toRev)
 	// tomorrow: other functions of lop, partition by group by etc.
+
+	someNums := []int{1, 2, 3, 4, 6, 7, 9}
+	partitioned := lop.PartitionBy(someNums, func(item int) int { return item % 3 })
+	fmt.Printf("partitioned %v\n", partitioned)
+
+	timesLooksWeird := lop.Times(5, func(i int) int { return i * 2 })
+	fmt.Printf("times %v\n", timesLooksWeird)
+
+	type order struct {
+		accountId int
+		orderId   int
+	}
+
+	orders := []order{{accountId: 1, orderId: 1},
+		{accountId: 1, orderId: 2},
+		{accountId: 2, orderId: 3}}
+
+	result := lop.GroupBy(orders, func(item order) int {
+		return item.accountId
+	})
+
+	fmt.Printf("orders grouped by: %v\n", result)
+	// orders grouped by: map[1:[{1 1} {1 2}] 2:[{2 3}]]
+
 }
