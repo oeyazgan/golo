@@ -94,4 +94,9 @@ func main() {
 	fmt.Printf("orders grouped by: %v\n", result)
 	// orders grouped by: map[1:[{1 1} {1 2}] 2:[{2 3}]]
 
+	flatMapResult := lo.FlatMap(someNums, func(item int, _ int) []int {
+		return []int{item + 1, item + 2}
+	})
+
+	fmt.Printf("flatmap %v\n", flatMapResult)
 }
